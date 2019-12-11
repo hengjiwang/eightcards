@@ -30,12 +30,12 @@ class Card:
         if self.board.defender.no_hand:
             return False
 
-        if not self.__matched(self.board):
+        if not self._matched(self.board):
             return False
 
         return True
 
-    def __matched(self, board):
+    def _matched(self, board):
         cards = board.cards
         for card in cards:
             if self.number == card.number:
