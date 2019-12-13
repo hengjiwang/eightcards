@@ -77,21 +77,21 @@ class Board:
     def attack_action(self):
 
         if self.attacker.no_hand:
-            self._end_turn('stop')
+            self._end_turn('abandon')
             return
 
 
         print("\n" + self.attacker.name + ": You are now attacker. " + " (Trump is " + str(self.trump) +") Your hand is:  \n")
         # print(self.attacker.hand)
         print(" ".join(str(card.show()) for card in self.attacker.hand))
-        print("\nThe cards on boards are: \n")
+        print("\nThe cards on the board are: \n")
         print(" ".join(str(card.show()) for card in self.cards))
-        title = "\n Please use a card to attack (input 'stop' to stop attacking):"
+        title = "\n Please use a card to attack (input 'abandon' to abandon attacking):"
         while True:
 
             input_str = input(title)
 
-            if input_str == 'stop':
+            if input_str == 'abandon':
                 self._end_turn(input_str)
                 break
             
@@ -120,7 +120,7 @@ class Board:
         print("\n" + self.defender.name + ": You are now a defender. " + " (Trump is " + str(self.trump) + ") Your hand is: \n")
         print(" ".join(str(card.show()) for card in self.defender.hand))
         # print(self.defender.hand)
-        print("\nThe cards on boards are: \n")
+        print("\nThe cards on the board are: \n")
         print(" ".join(str(card.show()) for card in self.cards))
         title = "\nPlease use a card to defend (input 'surrender' to surrender this turn):"
         while True:
