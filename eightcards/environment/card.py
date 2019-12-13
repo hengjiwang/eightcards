@@ -37,6 +37,8 @@ class Card:
 
     def _matched(self, board):
         cards = board.cards
+        if not cards:
+            return True
         for card in cards:
             if self.number == card.number:
                 return True
@@ -60,6 +62,9 @@ class Card:
                 return False
             else:
                 return self.number > card_to_defend.number
+
+    def show(self):
+        return (self.suit, self.number)
             
 
     
