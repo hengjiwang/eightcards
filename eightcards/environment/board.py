@@ -26,7 +26,7 @@ class Board:
         self._init_players()
 
         for player in self.players:
-            self.deal(player)
+            self._deal(player)
 
         self.trump = random.choice(['Heart', 'Spade', 'Club', 'Diamond'])
 
@@ -53,7 +53,7 @@ class Board:
         #         player.identity = 'Assist'
         return
 
-    def deal(self, player):
+    def _deal(self, player):
 
         while player.hand_number < 8:
             card = self.pile.pop()
@@ -64,6 +64,12 @@ class Board:
         return
 
     def attack_action(self):
+
+        if self.attacker.no_hand:
+            self._end_turn('stop')
+            return
+
+
         print("You are now attacker. Your hand is:  \n")
         print(" ".join(str(card) for card in self.attacker.hand))
 
@@ -73,7 +79,7 @@ class Board:
             card = input(title)
 
             if card == 'stop':
-                self.end_turn(card)
+                self._end_turn(card)
                 break
 
             if self.attacker.attack(card):
@@ -92,15 +98,15 @@ class Board:
         
 
     def defend_action(self):
-        print("You are now a defender. Your hand is: ")
+        print("You are now a defender. Your hand is: \n")
         print(" ".join(str(card) for card in self.defender.hand))
-        title = "Please use a card to defend (input 'surrender' to surrender this turn):"
+        title = "\nPlease use a card to defend (input 'surrender' to surrender this turn):"
         while True:
 
             card = input(title)
 
             if card == 'surrender':
-                self.end_turn(card)
+                self._end_turn(card)
                 break
 
             if self.defender.defend(card):
@@ -111,7 +117,7 @@ class Board:
                         self.winner = self.defender
                         self.end_game()
                     else:
-                        self.end_turn()
+                        self._end_turn()
 
                 break
 
@@ -120,7 +126,7 @@ class Board:
 
         return
 
-    def end_turn(self, last_card=None):
+    def _end_turn(self, last_card=None):
 
         if last_card == 'surrender':
             while self.cards:
@@ -131,8 +137,8 @@ class Board:
             self.cards = []
             self.attacker, self.defender = self.defender, self.attacker
 
-        self.deal(self.attacker)
-        self.deal(self.defender)
+        self._deal(self.attacker)
+        self._deal(self.defender)
         self.turns += 1
 
         print("Turn " + str(self.turns) + " -- Number of left cards: " + str(self.pile_number)) 

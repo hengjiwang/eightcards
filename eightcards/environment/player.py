@@ -1,3 +1,5 @@
+from eightcards.environment.card import Card
+
 class Player:
 
     def __init__(self, name):
@@ -14,13 +16,16 @@ class Player:
         return len(self.hand)
 
     def attack(self, card):
-        pass
+        if not card.attackable:
+            return False
+
+        self.hand.remove(card)
+        return True
+
 
     def defend(self, card):
-        pass
-    
-    # def surrend(self):
-    #     pass
-
-    # def stop_attack(self):
-    #     pass
+        if not card.defendable:
+            return False
+        
+        self.hand.remove(card)
+        return True
