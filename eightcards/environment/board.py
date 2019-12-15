@@ -81,7 +81,7 @@ class Board:
             return
 
 
-        print("\n" + self.attacker.name + ": You are now attacker. " + " (Trump is " + str(self.trump) +") Your hand is:  \n")
+        print("\n" + self.attacker.name + ": You are now the attacker. " + " (Trump is " + str(self.trump) +") Your hand is:  \n")
         # print(self.attacker.hand)
         print(" ".join(str(card.show()) for card in self.attacker.hand))
         print("\nThe cards on the board are: \n")
@@ -117,7 +117,7 @@ class Board:
         
 
     def defend_action(self):
-        print("\n" + self.defender.name + ": You are now a defender. " + " (Trump is " + str(self.trump) + ") Your hand is: \n")
+        print("\n" + self.defender.name + ": You are now the defender. " + " (Trump is " + str(self.trump) + ") Your hand is: \n")
         print(" ".join(str(card.show()) for card in self.defender.hand))
         # print(self.defender.hand)
         print("\nThe cards on the board are: \n")
@@ -155,17 +155,62 @@ class Board:
 
         return
 
+    def hunt_action(self):
+        print("\n" + self.attacker.name + ": You are now the attacker. " + " (Trump is " + str(self.trump) +") Your hand is:  \n")
+        print(" ".join(str(card.show()) for card in self.attacker.hand))
+        print("\nThe cards on the board are: \n")
+        print(" ".join(str(card.show()) for card in self.cards))      
+        print("\nThe defender has surrendered. Please choose the cards to hunt (Press 'Enter' twice to confirm): \n")
+        
+        input_str = input()
+        num_hunt_cards = 1
+
+        while input_str != '' and num_hunt_cards <= self.defender.hand_number:
+            card = self.attacker.get_card_by_str(input_str)
+
+            if not card:    
+
+                print("\nThe card you chose is not valid. Please choose another one: \n")
+
+            elif self.attacker.attack(card):
+                self.cards.append(card)
+
+                if self.attacker.no_hand and self.pile_number == 0:
+                    self.winner = self.attacker
+                    self.end_game()
+
+            else:
+
+                print("\nThe card you chose is not valid. Please choose another one: \n")
+
+            input_str = input()
+            num_hunt_cards += 1
+
+        return
+
+
     def _end_turn(self, input_str=None):
 
         if input_str == 'surrender':
+            self.hunt_action()
             while self.cards:
                 card = self.cards.pop()
                 self.defender.hand.append(card)
         
         else:
-            self.cards = []
-            self.attacker, self.defender = self.defender, self.attacker
+            print("\n" + self.defender.name + ": You are now the defender. " + " (Trump is " + str(self.trump) + ") Your hand is: \n")
+            print(" ".join(str(card.show()) for card in self.defender.hand))
+            # print(self.defender.hand)
+            print("\nThe cards on the board are: \n")
+            print(" ".join(str(card.show()) for card in self.cards))
+            title = "\nDo you want to surrender? (y/n): "
+            answer = input(title)
+            if answer not in ['n', 'N', 'no', 'No', 'NO']:
+                self.defender.hand.extend(self.cards)
+            else:
+                self.attacker, self.defender = self.defender, self.attacker
 
+        self.cards = []
         self._deal(self.attacker)
         self._deal(self.defender)
         self.turns += 1
